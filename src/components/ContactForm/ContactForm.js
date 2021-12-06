@@ -1,72 +1,70 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { addContacts } from "../../redux/contacts/contacts-actions";
 import s from "./ContactForm.module.css";
 
-class ContactForm extends Component {
-  state = { name: "", number: "" };
+export default function ContactForm() {
+  const [name, setName] = useState("");
+  const [number, setNumber] = useState("");
 
-  //записывает в this.state значения поля формы
-  hendleChange = (event) => {
-    const { name, value } = event.currentTarget;
-    this.setState({ [name]: value });
+  const dispatch = useDispatch();
+
+  const hendleChange = (event) => {
+    if (event.currentTarget.name === "name") {
+      setName(event.currentTarget.value);
+    }
+    if (event.currentTarget.name === "number") {
+      setNumber(event.currentTarget.value);
+    }
   };
 
-  //передает в Аpp значения полей формы
-  hendleSubmit = (event) => {
+  const hendleSubmit = (event) => {
     event.preventDefault();
-    this.props.onFormSubmit(this.state);
-    this.reset();
+    if (name === "") {
+      return alert("Заполните  поле");
+    }
+
+    dispatch(addContacts({ name, number }));
+    reset();
   };
 
-  //очистка формы
-  reset = () => {
-    this.setState({ name: "", number: "" });
+  const reset = () => {
+    setName("");
+    setNumber("");
   };
 
-  render() {
-    return (
-      <form className={s.contactForm} onSubmit={this.hendleSubmit}>
-        <label className={s.formLabel}>
-          Name
-          <input
-            className={s.formInput}
-            type="text"
-            name="name"
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
-            required
-            value={this.state.name}
-            onChange={this.hendleChange}
-          />
-        </label>
-        <label className={s.formLabel}>
-          <span>Number</span>
-          <input
-            className={s.formInput}
-            type="tel"
-            name="number"
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
-            required
-            value={this.state.number}
-            onChange={this.hendleChange}
-          />
-        </label>
+  return (
+    <form className={s.contactForm} onSubmit={hendleSubmit}>
+      <label className={s.formLabel}>
+        Name
+        <input
+          className={s.formInput}
+          type="text"
+          name="name"
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
+          required
+          value={name}
+          onChange={hendleChange}
+        />
+      </label>
+      <label className={s.formLabel}>
+        <span>Number</span>
+        <input
+          className={s.formInput}
+          type="tel"
+          name="number"
+          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+          title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
+          required
+          value={number}
+          onChange={hendleChange}
+        />
+      </label>
 
-        <button className={s.formButton} type="submit">
-          Add contact
-        </button>
-      </form>
-    );
-  }
+      <button className={s.formButton} type="submit">
+        Add contact
+      </button>
+    </form>
+  );
 }
-
-const mapDispatchToProps = (dispatch) => ({
-  onFormSubmit: (data) => dispatch(addContacts(data)),
-});
-
-ContactForm.propTypes = { onFormSubmit: PropTypes.func.isRequired };
-
-export default connect(null, mapDispatchToProps)(ContactForm);
