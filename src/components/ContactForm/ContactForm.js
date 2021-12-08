@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addContacts } from "../../redux/contacts/contacts-actions";
+import { getContacts } from "../../redux/contacts/contacts-selectors";
 import s from "./ContactForm.module.css";
 
 export default function ContactForm() {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
+  const allContacts = useSelector(getContacts);
 
   const dispatch = useDispatch();
 
@@ -20,10 +22,15 @@ export default function ContactForm() {
 
   const hendleSubmit = (event) => {
     event.preventDefault();
-    if (name === "") {
+    if (name === "" || number === "") {
       return alert("Заполните  поле");
     }
 
+    if (checkName(name)) {
+      alert(`${name} is alreadi in contacts`);
+      reset();
+      return;
+    }
     dispatch(addContacts({ name, number }));
     reset();
   };
@@ -32,6 +39,9 @@ export default function ContactForm() {
     setName("");
     setNumber("");
   };
+
+  const checkName = (newName) =>
+    allContacts.find(({ name }) => name === newName);
 
   return (
     <form className={s.contactForm} onSubmit={hendleSubmit}>

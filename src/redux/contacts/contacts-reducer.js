@@ -4,10 +4,6 @@ import { deleteContacts, addContacts, changeFilter } from "./contacts-actions";
 
 const itemsReducer = createReducer([], {
   [addContacts]: (state, { payload }) => {
-    if (state.find(({ name }) => name === payload.name)) {
-      alert(`${payload.name} is alreadi in contacts`);
-      return state;
-    }
     return [...state, payload];
   },
 
