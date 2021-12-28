@@ -19,6 +19,18 @@ export default function ContactForm() {
       setNumber(event.currentTarget.value);
     }
   };
+  //      const hendleChange = (event) => {
+  //     switch (event.currentTarget.name) {
+  //       case "name":
+  //         setName(event.currentTarget.value);
+  //         break;
+  //       case "number":
+  //         setNumber(event.currentTarget.value);
+  //         break;
+  //       default:
+  //         return;
+  //     }
+  //   };
 
   const hendleSubmit = (event) => {
     event.preventDefault();
